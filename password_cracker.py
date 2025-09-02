@@ -18,4 +18,19 @@ def get_known_salts():
 def crack_sha1_hash(hash, use_salts=False):
   passwords = get_top_passwords()
   salts = get_known_salts()
-  return True
+
+  if not use_salts:
+    for password in passwords:
+      if hash_with_sha1(password) == hash:
+        return password
+  else:
+    for password in passwords:
+      for salt in salts:
+        #Append
+        if hash_with_sha1(password + salt) == hash:
+          return password
+
+        #Prepend
+        if hash_with_sha1(salt + password) == hash:
+          return password
+  return "PASSWORD NOT IN DATABASE"
